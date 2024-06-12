@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,6 +25,10 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/python-example:latest
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -32,15 +36,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
-      - name: Deploy to EC2
-        run: |
-          # SSH into the EC2 instance
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@34.227.195.129 << EOF
-          # Pull the latest Docker image
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/python-example:latest
-          # Stop the old container if it's running
-          docker stop my-python-app || true
-          docker rm my-python-app || true
-          # Run the new Docker image with port mapping
-          docker run -d --name my-python-app -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/python-example:latest
-          EOF
+      # - name: Deploy to EC2
+      #   run: |
+      #     # SSH into the EC2 instance
+      #     ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@34.227.195.129 << EOF
+      #     # Pull the latest Docker image
+      #     docker pull ${{ secrets.DOCKERHUB_USERNAME }}/python-example:latest
+      #     # Stop the old container if it's running
+      #     docker stop my-python-app || true
+      #     docker rm my-python-app || true
+      #     # Run the new Docker image with port mapping
+      #     docker run -d --name my-python-app -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/python-example:latest
+      #     EOF
