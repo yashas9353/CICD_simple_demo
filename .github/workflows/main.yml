@@ -37,6 +37,7 @@ jobs:
         run: |
           if [ "$(docker ps -q -f ancestor=${{ secrets.DOCKERHUB_USERNAME }}/python-example)" ]; then
               docker stop $(docker ps -q -f ancestor=${{ secrets.DOCKERHUB_USERNAME }}/python-example)
+              docker rm $(docker ps -a -q -f ancestor=${{ secrets.DOCKERHUB_USERNAME }}/python-example)
           fi
 
       - name: run new container
