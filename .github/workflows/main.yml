@@ -35,9 +35,10 @@ jobs:
 
       - name: stop old container if running
         run: |
-          if [ "$(docker ps -q -f ancestor=${{ secrets.DOCKERHUB_USERNAME }}/python-example)" ]; then
-              docker stop $(docker ps -q -f ancestor=${{ secrets.DOCKERHUB_USERNAME }}/python-example)
-              docker rm $(docker ps -a -q -f ancestor=${{ secrets.DOCKERHUB_USERNAME }}/python-example)
+          CONTAINER_ID=$(docker ps -q -f "publish=8080")
+          if [ -n "$CONTAINER_ID" ]; then
+              docker stop $CONTAINER_ID
+              docker rm $CONTAINER_ID
           fi
 
       - name: run new container
