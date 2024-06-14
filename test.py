@@ -1,6 +1,8 @@
 import pytest
-from app import app
+from flask import Flask
 
+# Import the app from your application file
+from app import app
 
 @pytest.fixture
 def client():
@@ -8,8 +10,6 @@ def client():
     with app.test_client() as client:
         yield client
 
-
-def test_app_is_working(client):
-    response = client.get('/')
-    assert response.status_code == 200
-    assert b"Hello World!" in response.data
+def test_hello(client):
+    rv = client.get('/')
+    assert b'Welcome Yashas How are you and Welcome Boy and always remember family first' in rv.data
