@@ -12,4 +12,4 @@ def client():
 
 def test_hello(client):
     rv = client.get('/')
-    assert b'Welcome Yashas How are you and Welcome Boy and always remember family first' in rv.data
+    assert b'Yashas Is The Not Best"' in rv.data
